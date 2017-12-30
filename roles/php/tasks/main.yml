@@ -30,3 +30,8 @@
   shell: composer.sh
   args:
     creates: log.txt
+  register: result
+
+- name: Restart apache on installation success
+  notify: restart httpd
+  when: result|succeeded
