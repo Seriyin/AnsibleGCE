@@ -6,7 +6,16 @@
     - mysql
 
 
+- name: Install and generate a magento, MySQL client, httpd, PHP GCE template
+  hosts: tag_magento_template
+  user: gce-user
+  roles:
+    - common
+    - mysql_client
     - httpd
     - php
     - magento
+    - make_template
+
+
     - apachejmeter
