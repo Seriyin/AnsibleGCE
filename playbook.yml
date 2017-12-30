@@ -1,0 +1,11 @@
+- name: Install magento, MySQL, httpd, PHP, Apache JMeter
+  hosts: magento-server
+  user: gce-user
+
+  roles:
+    - common
+    - mysql
+    - httpd
+    - php
+    - magento
+    - apachejmeter
