@@ -3,7 +3,12 @@
     update-cache: yes
     upgrade: full
 
-- name: Install libselinux-python
+- name: Install common needed stuff
   apt: 
-    name: libselinux-python 
+    name: "{{item}}" 
     state: present
+    with_items:
+      - software-properties-common
+      - wget
+      - vim
+      - nano
