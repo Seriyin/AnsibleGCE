@@ -34,6 +34,9 @@
     - make_lb_service
 
 
+- name: Install and run apache JMeter into a separate GCE instance.
+  hosts: tag_jmeter
+  user: gce-user
   roles:
     - common
     - apachejmeter
