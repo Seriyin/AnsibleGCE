@@ -18,4 +18,14 @@
     - make_template
 
 
+- name: Generate a GCE managed instance group from template
+  hosts: tag_magento
+  user: gce-user
+  roles:
+    - common
+    - make_instance_group
+
+
+  roles:
+    - common
     - apachejmeter
