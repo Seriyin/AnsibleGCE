@@ -26,6 +26,14 @@
     - make_instance_group
 
 
+- name: Generate a load balancing service
+  hosts: tag_load_balance
+  user: gce-user
+  roles:
+    - common
+    - make_lb_service
+
+
   roles:
     - common
     - apachejmeter
