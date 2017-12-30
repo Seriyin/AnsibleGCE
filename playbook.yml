@@ -1,10 +1,11 @@
-- name: Install magento, MySQL, httpd, PHP, Apache JMeter
-  hosts: magento-server
+- name: Install and run DB-server from a GCE instance
+  hosts: tag_db
   user: gce-user
-
   roles:
     - common
     - mysql
+
+
     - httpd
     - php
     - magento
