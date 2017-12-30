@@ -1,0 +1,13 @@
+---
+# Magento_db setup
+magento_db_name: magento
+magento_db_user: magento
+magento_db_password: {magento_db_password_vault}
+
+# You shouldn't need to change this.
+mysql_port: 3306
+
+
+service_account_email: 292917381596-compute@developer.gserviceaccount.com
+credentials_file: ~/.secrets/group12-1b558a1efd94.json
+project_id: sapient-tangent-182510
