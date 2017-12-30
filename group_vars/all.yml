@@ -1,13 +1,31 @@
 ---
+# Which version of Magento to deploy: http://www.magentocommerce.com/download
+# Magento doesn't have direct download anymore.
+# Try doing it via composer
+magento_version: 2.2.2
+
 # Magento_db setup
 magento_db_name: magento
 magento_db_user: magento
-magento_db_password: {magento_db_password_vault}
+magento_db_password: {vault_magento_password}
+
+# Magento_admin setup
+magento_admin_first: GCE
+magento_admin_last: SDB
+magento_admin_email: GCESDB12@google.com
+magento_admin_user: GCE
+magento_admin_pass: {vault_magento_password}
+magento_domain: http://www.sample.com/
+
 
 # You shouldn't need to change this.
 mysql_port: 3306
 
+# sFTP user
+web_user: magento
 
+
+# GCE account setup
 service_account_email: 292917381596-compute@developer.gserviceaccount.com
 credentials_file: ~/.secrets/group12-1b558a1efd94.json
 project_id: sapient-tangent-182510
