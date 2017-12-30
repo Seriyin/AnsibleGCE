@@ -1,0 +1,9 @@
+- name: Update apt-cache
+  apt:
+    update-cache: yes
+    upgrade: full
+
+- name: Install libselinux-python
+  apt: 
+    name: libselinux-python 
+    state: present
