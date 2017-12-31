@@ -50,23 +50,39 @@
   roles:
     - deactivate_instance
 
+
+- name: Create image from template VM boot disk
+  hosts: localhost
+  user: gce-user
+  roles:
+    - make_image
+
+
+- name: Make an instance template from the magento VM
+  hosts: localhost
+  user: gce-user
   roles:
     - make_template
 
 
 - name: Generate a GCE managed instance group from template
-  hosts: tag_magento
+  hosts: localhost
   user: gce-user
+  vars:
+    instance_tag: magento_instance_group
+    vm_metadata: '{"db":"mysql", "group":"magento_mig"}'
+    type_machine: n1-standard-1
   roles:
-    - common
     - make_instance_group
 
 
+
 - name: Generate a load balancing service
-  hosts: tag_load_balance
+  hosts: localhost
   user: gce-user
+  vars:
+    instance_tag: load_balance
   roles:
-    - common
     - make_lb_service
 
 
