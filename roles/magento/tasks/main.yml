@@ -1,0 +1,10 @@
+---
+- name: Ensure /var/www/html/ exists
+  command: mkdir /var/www/html
+  become: root
+
+- name: Compose the magento project on /var/www/html/
+  composer:
+    command: create-project
+    arguments: --repository-url=https://repo.magento.com/ magento/project-community-edition magento2
+    working_dir: /var/www/html/
