@@ -39,6 +39,18 @@
     - httpd
     - php
     - magento
+
+
+- name: Deactivate template instance
+  hosts: localhost
+  user: gce-user
+  vars:
+    instance_tag: magento_template
+    type_machine: n1-standard-1
+  roles:
+    - deactivate_instance
+
+  roles:
     - make_template
 
 
