@@ -1,0 +1,11 @@
+---
+- name: Deactivate an instance.  
+  gce:
+    instance_names: "{{instance_tag}}"
+    zone: europe-west1-c
+    machine_type: "{{type_machine}}"
+    image_family: ubuntu-1710
+    state: stopped
+    tags:
+      - "{{instance_tag}}"
+    disk_auto_delete: false
