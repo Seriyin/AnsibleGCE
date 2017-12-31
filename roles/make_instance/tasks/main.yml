@@ -1,0 +1,19 @@
+# Create a single Debian 8 instance in the europe-west1-c Zone
+# Use existing disks, custom network/subnetwork, set service account permissions
+# add tags and metadata.
+- name: Create an instance.  
+  gce:
+    instance_names: "{{instance_tag}}"
+    zone: europe-west1-c
+    machine_type: "{{type_machine}}"
+    image_family: ubuntu-1710
+    state: active
+    metadata: "{{vm_metadata}}"
+    tags:
+      - "{{instance_tag}}"
+    disks:
+      - name: "{{instance_tag}}"
+        mode: READ_WRITE
+    disk_size: "{{size_disk}}"
+    disk_auto_delete: false
+    ip_forward: true
