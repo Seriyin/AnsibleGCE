@@ -19,7 +19,18 @@
     - mysql
 
 
-- name: Install and generate a magento, MySQL client, httpd, PHP GCE template
+- name: Make a Standard VM active for templating
+  hosts: localhost
+  vars:
+    instance_tag: magento_template
+    vm_metadata: '{"db":"mysql", "group":"magento"}'
+    size_disk: 15
+    type_machine: n1-standard-1
+  roles:
+    - make_instance
+
+
+- name: Install magento, MySQL client, httpd, PHP into GCE template
   hosts: tag_magento_template
   user: gce-user
   roles:
