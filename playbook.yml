@@ -1,4 +1,17 @@
-- name: Install and run DB-server from a GCE instance
+---
+- name: Make the DB instance active.
+  hosts: localhost
+  user: gce-user
+  vars:
+    instance_tag: db
+    vm_metadata: '{"db":"mysql", "group":"db"}'
+    size_disk: 30
+    type_machine: g1-small
+  roles:
+    - make_instance
+    
+
+- name: Install and run DB-server from the DB instance
   hosts: tag_db
   user: gce-user
   roles:
