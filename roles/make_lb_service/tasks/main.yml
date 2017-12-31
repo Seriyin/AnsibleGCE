@@ -1,0 +1,6 @@
+- name: Start up a Load-balancer
+    region: europe-west1
+    members: ["europe-west1-c/www-a", "europe-west1-c/www-b"]
+    httphealthcheck_name: hc
+    httphealthcheck_port: 80
+    httphealthcheck_path: "/up"
