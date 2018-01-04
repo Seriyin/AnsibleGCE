@@ -1,0 +1,11 @@
+- name: Deactivate a Load-balancer
+  gce_lb:
+    name: "{{instance_tag}}"
+    region: europe-west1
+    members: "{{item}}"
+    httphealthcheck_name: "{{ http_healthcheck}}"
+    httphealthcheck_port: 80
+    httphealthcheck_path: "{{httphealthcheck_path}}"
+    with_items: 
+      - "{{ groups['tag_{{magento_name}}'] }}"
+    state: absent
