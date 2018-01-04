@@ -1,12 +1,12 @@
-# Create number_VMs Ubuntu 17_10 instances in the europe-west1-c Zone.
+# Activate number_VMs Ubuntu 17_10 instances in the europe-west1-c Zone.
 # Add tags and metadata.
-- name: "Create {{number_VMs}} instances."  
+- name: "Activate {{number_VMs}} of instances."  
   gce:
     name: "{{instance_tag}}"
     zone: europe-west1-c
     machine_type: "{{type_machine}}"
     image_family: ubuntu-1710
-    state: present
+    state: active
     num_instances: "{{number_VMs}}"
     metadata: "{{vm_metadata}}"
     tags:
