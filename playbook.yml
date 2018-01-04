@@ -1,44 +1,70 @@
 ---
+
 - name: Make the DB instance active.
   hosts: localhost
   user: gce-user
-  vars:
-    instance_tag: db
-    vm_metadata: '{"db":"mysql", "group":"db"}'
-    size_disk: 30
-    type_machine: g1-small
+  vars_files:
+    - vars/db.yml
+    - vars/gce.yml
+    - vars/vault.yml
   roles:
     - make_instance
     
+- name: Create gcs-user
+  hosts: "tag_{{db_name}}"
+  vars_files:
+    - vars/db.yml
+    - vars/vault.yml
+  roles:
+    - create_user
+  become: root
 
 - name: Install and run DB-server from the DB instance
-  hosts: tag_db
+  hosts: "tag_{{db_name}}"
+  vars_files:
+    - vars/db.yml
+    - vars/vault.yml
   user: gce-user
   roles:
     - common
     - mysql
 
 
-- name: Make a Standard VM active for templating
+- name: Create some magento VMs based on number in magento.yml
   hosts: localhost
-  vars:
-    instance_tag: magento_template
-    vm_metadata: '{"db":"mysql", "group":"magento"}'
-    size_disk: 15
-    type_machine: n1-standard-1
-    number_VMs: 3
+  vars_files:
+    - vars/magento.yml
+    - vars/gce.yml
+    - vars/vault.yml
   roles:
     - make_instance
 
+- name: Make those VMs active
+  hosts: localhost
+  vars_files:
+    - vars/magento.yml
+    - vars/gce.yml
+    - vars/vault.yml
+  roles:
+    - make_instance_active
+
+
 - name: Create gcs-user
-  hosts: tag_magento_template
+  hosts: "tag_{{magento_name}}"
+  vars_files:
+    - vars/magento.yml
+    - vars/vault.yml
   roles:
     - create_user
+  become: root
 
 
 - name: Install magento, MySQL client, httpd, PHP into GCE template
-  hosts: tag_magento_template
+  hosts: "tag_{{magento_name}}"
   user: gce-user
+  vars_files:
+    - vars/magento.yml
+    - vars/vault.yml
   roles:
     - common
     - mysql_client
@@ -57,8 +83,8 @@
 - name: Deactivate template instance
   hosts: localhost
   user: gce-user
-  vars:
-    instance_tag: magento_template
-    type_machine: n1-standard-1
+  vars_files:
+    - vars/magento.yml
+    - vars/vault.yml
   roles:
     - deactivate_instance
