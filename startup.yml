@@ -30,7 +30,7 @@
     - mysql
 
 
-- name: Create some magento VMs based on number in magento.yml
+- name: Create and activate some magento VMs based on number in magento.yml
   hosts: localhost
   vars_files:
     - vars/magento.yml
@@ -38,14 +38,6 @@
     - vars/vault.yml
   roles:
     - make_instance
-
-- name: Make those VMs active
-  hosts: localhost
-  vars_files:
-    - vars/magento.yml
-    - vars/gce.yml
-    - vars/vault.yml
-  roles:
     - make_instance_active
 
 
@@ -72,19 +64,14 @@
     - php
     - magento
 
-- name: Generate a load balancing service
+- name: Generate and activate a load balancing service
   hosts: localhost
   user: gce-user
-  vars:
-    instance_tag: load_balance
-  roles:
-    - make_lb_service
-
-- name: Deactivate template instance
-  hosts: localhost
-  user: gce-user
-  vars_files:
+  var_files:
     - vars/magento.yml
     - vars/vault.yml
+    - vars/gce.yml
+    - vars/lb_hc.yml
   roles:
-    - deactivate_instance
+    - make_lb_service
+    - make_lb_service_active

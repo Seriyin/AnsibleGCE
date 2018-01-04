@@ -1,0 +1,21 @@
+- name: Deactivate all Magento instances + load balancing
+  hosts: localhost
+  user: gce-user
+  vars_files:
+    - vars/magento.yml
+    - vars/vault.yml
+    - vars/gce.yml
+    - vars/lb_hc.yml
+  roles:
+    - deactivate_instance
+    - deactivate_lb_service
+
+- name: Deactivate the DB instance
+  hosts: localhost
+  user: gce-user
+  vars_files:
+    - vars/vault.yml
+    - vars/gce.yml
+    - vars/db.yml
+  roles:
+    - deactivate_instance
