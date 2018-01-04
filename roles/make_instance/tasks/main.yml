@@ -3,11 +3,12 @@
 # add tags and metadata.
 - name: Create an instance.  
   gce:
-    instance_names: "{{instance_tag}}"
+    name: "{{instance_tag}}"
     zone: europe-west1-c
     machine_type: "{{type_machine}}"
     image_family: ubuntu-1710
     state: active
+    num_instances: "{{number_VMs}}"
     metadata: "{{vm_metadata}}"
     tags:
       - "{{instance_tag}}"

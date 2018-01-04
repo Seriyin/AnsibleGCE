@@ -7,14 +7,14 @@ magento_version: 2.2.2
 # Magento_db setup
 magento_db_name: magento
 magento_db_user: magento
-magento_db_password: {vault_magento_password}
+#magento_db_password: {vault_magento_password}
 
 # Magento_admin setup
 magento_admin_first: GCE
 magento_admin_last: SDB
 magento_admin_email: GCESDB12@google.com
 magento_admin_user: GCE
-magento_admin_pass: {vault_magento_password}
+#magento_admin_pass: {vault_magento_password}
 magento_domain: http://www.sample.com/
 
 
@@ -29,3 +29,6 @@ web_user: magento
 service_account_email: 292917381596-compute@developer.gserviceaccount.com
 credentials_file: ~/.secrets/group12-1b558a1efd94.json
 project_id: sapient-tangent-182510
+
+# Number of GCE VMs
+number_VMs: 1

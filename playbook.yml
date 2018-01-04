@@ -26,8 +26,14 @@
     vm_metadata: '{"db":"mysql", "group":"magento"}'
     size_disk: 15
     type_machine: n1-standard-1
+    number_VMs: 3
   roles:
     - make_instance
+
+- name: Create gcs-user
+  hosts: tag_magento_template
+  roles:
+    - create_user
 
 
 - name: Install magento, MySQL client, httpd, PHP into GCE template
@@ -40,6 +46,13 @@
     - php
     - magento
 
+- name: Generate a load balancing service
+  hosts: localhost
+  user: gce-user
+  vars:
+    instance_tag: load_balance
+  roles:
+    - make_lb_service
 
 - name: Deactivate template instance
   hosts: localhost
@@ -49,58 +62,3 @@
     type_machine: n1-standard-1
   roles:
     - deactivate_instance
-
-
-- name: Create image from template VM boot disk
-  hosts: localhost
-  user: gce-user
-  roles:
-    - make_image
-
-
-- name: Make an instance template from the magento VM
-  hosts: localhost
-  user: gce-user
-  roles:
-    - make_template
-
-
-- name: Generate a GCE managed instance group from template
-  hosts: localhost
-  user: gce-user
-  vars:
-    instance_tag: magento_instance_group
-    vm_metadata: '{"db":"mysql", "group":"magento_mig"}'
-    type_machine: n1-standard-1
-  roles:
-    - make_instance_group
-
-
-
-- name: Generate a load balancing service
-  hosts: localhost
-  user: gce-user
-  vars:
-    instance_tag: load_balance
-  roles:
-    - make_lb_service
-
-
-- name: Make instance for JMeter
-  hosts: localhost
-  user: gce-user
-  vars:
-    instance_tag: jmeter
-    vm_metadata: '{"group":"jmeter"}'
-    size_disk: 10
-    type_machine: g1-small    
-  roles:
-    - make_instance
-
-
-- name: Install and run apache JMeter into a separate GCE instance.
-  hosts: tag_jmeter
-  user: gce-user
-  roles:
-    - common
-    - apachejmeter

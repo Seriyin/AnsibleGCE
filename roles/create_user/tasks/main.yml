@@ -1,0 +1,4 @@
+- name: Create gce user
+  user: 
+    group: "sudo"
+    name: "gce-user"

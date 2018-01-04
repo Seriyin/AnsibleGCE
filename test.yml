@@ -1,0 +1,10 @@
+- name: Make a Standard VM active for templating
+  hosts: localhost
+  vars:
+    instance_tag: magento_template
+    vm_metadata: '{"db":"mysql", "group":"magento"}'
+    size_disk: 15
+    type_machine: f1-micro
+    number_VMs: 3
+  roles:
+    - make_instance
