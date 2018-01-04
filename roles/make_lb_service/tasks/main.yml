@@ -1,7 +1,26 @@
+- name: Create HTTP HealthCheck
+  gcp_healthcheck:
+    service_account_email: "{{ service_account_email }}"
+    credentials_file: "{{ credentials_file }}"
+    project_id: "{{ project_id }}"
+    healthcheck_name: "{{ http_healthcheck }}"
+    healthcheck_type: HTTP
+    host_header: "{{magento_poll}}"
+    request_path: /hc
+    check_interval: 5
+    timeout: 5
+    unhealthy_threshold: 2
+    healthy_threshold: 1
+    state: present
+
 - name: Start up a Load-balancer
   gce_lb:
+    name: "{{instance_tag}}"
     region: europe-west1
-    members: ["europe-west1-c/www-a", "europe-west1-c/www-b"]
-    httphealthcheck_name: hc
+    members: "{{item}}"
+    httphealthcheck_name: "{{ http_healthcheck}}"
     httphealthcheck_port: 80
-    httphealthcheck_path: "/up"
+    httphealthcheck_path: "{{httphealthcheck_path}}"
+    with_items: 
+      - "{{ groups['tag_{{magento_name}}'] }}"
+    state: present
