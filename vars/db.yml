@@ -1,0 +1,10 @@
+db_name: db
+
+instance_tag: "{{db_name}}"
+vm_metadata: '{"db":"mysql", "group":"db"}'
+size_disk: 30
+type_machine: g1-small
+number_VMs: 1
+
+# You shouldn't need to change this.
+mysql_port: 3306
