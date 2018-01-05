@@ -21,6 +21,6 @@
     httphealthcheck_name: "{{ http_healthcheck}}"
     httphealthcheck_port: 80
     httphealthcheck_path: "{{httphealthcheck_path}}"
-    with_items: 
-      - "{{ groups['tag_{{magento_name}}'] }}"
     state: present
+    with_inventory_hostnames:  
+      - "tag_{{magento_name}}"
