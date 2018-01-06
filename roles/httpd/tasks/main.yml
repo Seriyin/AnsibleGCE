@@ -35,10 +35,18 @@
 - name: Copy httpd configuration for domain whithout varnish
   template: 
     src: vhost.conf 
-    dest: /etc/httpd/vhost.d/{{ server_hostname }}.conf
+    dest: /etc/httpd/vhost.d/vhost.conf
 
 - name: Copy httpd configuration for ports without varnish
   template: 
     src: ports.conf 
     dest: /etc/httpd/ports.conf
   notify: restart httpd
+
+- name: restart iptables
+  service: name=iptables state=restarted
+  when: magento_install != 'install'
+
+- name: restart httpd
+  service: name=httpd state=restarted
+  when: magento_install != 'install'

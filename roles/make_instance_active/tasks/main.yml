@@ -6,7 +6,7 @@
     zone: europe-west1-c
     machine_type: "{{type_machine}}"
     image_family: ubuntu-1710
-    state: active
+    state: started
     num_instances: "{{number_VMs}}"
     metadata: "{{vm_metadata}}"
     tags:

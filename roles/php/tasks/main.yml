@@ -33,5 +33,5 @@
   register: result
 
 - name: Restart apache on installation success
-  notify: restart httpd
+  service: name=httpd state=restarted
   when: result|succeeded

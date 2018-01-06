@@ -9,6 +9,7 @@
     - vars/vault.yml
   roles:
     - make_instance
+    - make_instance_active
     
 - name: Create gcs-user
   hosts: "tag_{{db_name}}"
@@ -67,7 +68,7 @@
 - name: Generate and activate a load balancing service
   hosts: localhost
   user: gce-user
-  var_files:
+  vars_files:
     - vars/magento.yml
     - vars/vault.yml
     - vars/gce.yml
