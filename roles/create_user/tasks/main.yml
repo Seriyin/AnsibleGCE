@@ -1,6 +1,6 @@
 - name: Create gce user
   user: 
     groups:
-      - "sudo"
-    name: "gce-user"
+      - sudo
+    name: gce-user
     shell: /bin/bash

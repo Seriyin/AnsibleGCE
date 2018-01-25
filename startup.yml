@@ -12,12 +12,13 @@
     
 - name: Create gcs-user
   hosts: "tag_{{db_name}}"
+  sudo: True
   vars_files:
     - vars/db.yml
     - vars/vault.yml
   roles:
     - create_user
-  become: root
+  #become: root
 
 - name: Install and run DB-server from the DB instance
   hosts: "tag_{{db_name}}"
