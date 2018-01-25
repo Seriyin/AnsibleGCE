@@ -29,3 +29,5 @@ instance_tag: "{{magento_name}}"
 vm_metadata: '{"db":"mysql", "group":"magento"}'
 size_disk: 15
 type_machine: n1-standard-1
+
+group_name: new_instances

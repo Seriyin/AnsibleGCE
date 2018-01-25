@@ -1,4 +1,3 @@
----
 
 - name: Make the DB instance active.
   hosts: localhost
@@ -54,6 +53,7 @@
 
 - name: Install magento, MySQL client, httpd, PHP into GCE template
   hosts: "tag_{{magento_name}}"
+  connection: ssh
   user: gce-user
   vars_files:
     - vars/magento.yml
