@@ -9,6 +9,7 @@
   roles:
     - make_instance
     - make_instance_active
+    - wait_ssh
     
 - name: Create gcs-user
   hosts: "tag_{{db_name}}"
