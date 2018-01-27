@@ -7,8 +7,8 @@
   apt: 
     name: "{{item}}" 
     state: present
-    with_items:
-      - software-properties-common
-      - wget
-      - vim
-      - nano
+  with_items:
+    - software-properties-common
+    - wget
+    - vim
+    - nano

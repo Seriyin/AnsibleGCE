@@ -1,7 +1,6 @@
 
 - name: Make the DB instance active.
   hosts: localhost
-  user: gce-user
   vars_files:
     - vars/db.yml
     - vars/gce.yml
@@ -10,23 +9,14 @@
     - make_instance
     - make_instance_active
     - wait_ssh
-    
-- name: Create gcs-user
-  hosts: "tag_{{db_name}}"
-  sudo: True
-  vars_files:
-    - vars/db.yml
-    - vars/vault.yml
-  roles:
-    - create_user
-  #become: root
 
 - name: Install and run DB-server from the DB instance
   hosts: "tag_{{db_name}}"
   vars_files:
     - vars/db.yml
     - vars/vault.yml
-  user: gce-user
+  become: True
+  become_method: sudo
   roles:
     - common
     - mysql
@@ -43,20 +33,11 @@
     - make_instance_active
 
 
-- name: Create gcs-user
-  hosts: "tag_{{magento_name}}"
-  vars_files:
-    - vars/magento.yml
-    - vars/vault.yml
-  roles:
-    - create_user
-  become: root
-
 
 - name: Install magento, MySQL client, httpd, PHP into GCE template
   hosts: "tag_{{magento_name}}"
   connection: ssh
-  user: gce-user
+  become: True
   vars_files:
     - vars/magento.yml
     - vars/vault.yml
@@ -69,7 +50,7 @@
 
 - name: Generate and activate a load balancing service
   hosts: localhost
-  user: gce-user
+  become: True
   vars_files:
     - vars/magento.yml
     - vars/vault.yml

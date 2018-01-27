@@ -7,6 +7,6 @@
     httphealthcheck_port: 80
     httphealthcheck_path: "{{httphealthcheck_path}}"
     state: active
-    with_inventory_hostnames:  
-      - "tag_{{magento_name}}"
+  with_inventory_hostnames:  
+    - "tag_{{magento_name}}"
     

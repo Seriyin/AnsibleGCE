@@ -1,26 +1,26 @@
 - name: Open port 80
-  shell: iptables -I INPUT 1 -p tcp --dport 80 -j ACCEPT
+  shell: iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 
 - name: Save Iptables
-  shell: /etc/init.d/iptables save
+  shell: /sbin/iptables-save
 
 - name: Install apache
   apt: 
     name: "{{item}}" 
     state: present
-    with_items:
-      - apache2
+  with_items:
+    - apache2
 
 - name: Install apache modules
   apache2_module:
     name: "{{item}}"
     state: present
-    with_tiems:
-      - rewrite
+  with_items:
+    - rewrite
 
 - name: httpd Start initial
   service: 
-    name: httpd 
+    name: apache2
     state: started 
     enabled: yes
 
