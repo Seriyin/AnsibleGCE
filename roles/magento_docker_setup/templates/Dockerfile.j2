@@ -1,0 +1,10 @@
+FROM andrediogo92/magento-php:latest
+
+RUN cd /var/www/magento2 && \
+    find var generated vendor pub/static pub/media app/etc -type f -exec chmod 777 {} \; && \
+    find var vendor generated pub/static pub/media app/etc -type d -exec chmod 777 {} \; && \
+    chmod 777 bin/magento && \
+    export PATH=$PATH:/var/www/magento2/bin && \
+    magento setup:install --admin-firstname={{magento_admin_first}} --admin-lastname={{magento_admin_last}} --admin-email={{magento_admin_email}} --admin-user={{magento_admin_user}} --admin-password={{magento_admin_pass}} --db-host={{db_host}} --db-name={{magento_db_name}} --db-user={{magento_db_user}} --db-password={{magento_db_password}} --use-rewrites=1
+
+EXPOSE 3306
