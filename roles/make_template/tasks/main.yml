@@ -1,8 +1,0 @@
----
-- name: Create instance template
-  gce_instance_template:
-    description: "Instance configured for Magento web-server."
-    name: "magento2"
-    size: "{{type_machine}}"
-    image_family: ubuntu-1604-lts
-    state: present
