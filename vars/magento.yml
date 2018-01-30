@@ -1,3 +1,5 @@
 vm_metadata: '{"db":"mysql", "group":"magento"}'
 size_disk: 10
 type_machine: g1-small
+instance_name: {{magento_name}}
+instance_image_family: cos-stable
