@@ -8,7 +8,29 @@
     name: "{{item}}" 
     state: present
   with_items:
-    - software-properties-common
     - wget
-    - vim
     - nano
+    - curl
+
+- name: Download and add docker public key.
+  apt-key: 
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 0EBFCD88
+
+- name: Get linux release name
+  shell: echo $(lsb_release -cs)
+  register: release_version
+    
+- name: Add docker repository.
+  repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{release_version.stdout_lines}} stable"
+ 
+- name: Install docker.
+  apt:
+     update-cache: yes
+     name : docker-ce
+
+- name: Download docker compose.
+  shell: curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+
+- name: Make docker compose executable.
+  command: chmod +x /usr/local/bin/docker-compose
