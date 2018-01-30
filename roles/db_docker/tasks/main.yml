@@ -1,0 +1,5 @@
+---
+- name: Setup docker-compose file.
+  template:
+    src: db.yml.j2
+    dest: docker-compose.yml
