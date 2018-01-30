@@ -1,33 +1,3 @@
----
-# Which version of Magento to deploy: http://www.magentocommerce.com/download
-# Magento doesn't have direct download anymore.
-# Try doing it via composer
-magento_version: 2.2.2
-
-# Magento_db setup
-magento_db_name: magento
-magento_db_user: magento
-magento_db_password: "{{vault_magento_password}}"
-
-# Magento_admin setup
-magento_admin_first: GCE
-magento_admin_last: SDB
-magento_admin_email: GCESDB12@google.com
-magento_admin_user: GCE
-magento_admin_pass: "{{vault_magento_password}}"
-magento_domain: http://www.sample.com/
-
-# sFTP user
-web_user: magento
-
-# Number of GCE VMs
-number_VMs: 3
-
-magento_name: magento
-
-instance_tag: "{{magento_name}}"
 vm_metadata: '{"db":"mysql", "group":"magento"}'
-size_disk: 15
-type_machine: n1-standard-1
-
-group_name: new_instances
+size_disk: 10
+type_machine: g1-small
