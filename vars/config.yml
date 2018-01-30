@@ -1,0 +1,20 @@
+#Tags to apply to GCE instances
+db_name: db
+magento_name: magento1
+
+# Magento DB setup. Will match install and db instance default database.
+magento_db_name: magento1
+magento_db_user: magento1
+magento_db_password: "{{vault_magento_password}}"
+
+# Magento install parameters
+magento_admin_first: GCE
+magento_admin_last: SDB
+magento_admin_email: GCESDB12@google.com
+magento_admin_user: GCE
+magento_admin_pass: "{{vault_magento_password}}"
+magento_domain: http://www.sample.com/
+
+# Number of GCE VMs
+replicate_VMs: 3
+
