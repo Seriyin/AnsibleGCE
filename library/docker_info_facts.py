@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # https://github.com/nextrevision/ansible-swarm-playbook
 # Copyright 2016, This End Out, LLC.
 #
@@ -32,17 +32,14 @@ EXAMPLES = """
 docker_lib_missing=False
 
 try:
-    from docker import Client
+    import docker
 except:
-    try:
-        from docker import APIClient as Client
-    except:
-        docker_lib_missing=True
+    docker_lib_missing=True
 
 
 def _get_docker_info():
     try:
-        return Client().info(), False
+        return docker.Client().info(), False
     except Exception as e:
         return {}, e.message
 
