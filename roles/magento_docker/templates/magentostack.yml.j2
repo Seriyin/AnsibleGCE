@@ -4,8 +4,8 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-      replicas:
-        {{replicate_VMS}}
+        mode: global
+      replicas: {{replicate_VMs}}
     labels:
       magento.container: "Magento"
     image: magento-php:latest
@@ -21,8 +21,8 @@ services:
     deploy:
       restart_policy:
         condition: on-failure
-      replicas:
-        {{replicate_VMS}}
+      mode: global
+      replicas: {{replicate_VMs}}
     labels:
       web.container: "Nginx"
     ports:
@@ -33,6 +33,19 @@ services:
     volumes:
       - "php:/var/www/html/magento2"
       - "./docker-images/nginx/vhosts.conf:/etc/nginx/conf.d/default.conf"
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:6.1.2
+    deploy:
+      restart_policy:
+        condition: on-failure
+      mode: global
+      replicas: {{replicate_VMs}}
+    labels:
+      metricbeat.container: "Metricbeat"
+    networks:
+      - webnet
+    volumes:
+      - "/etc/metricbeatscfg:/usr/share/metricbeat"
 networks:
   webnet:
 volumes:
