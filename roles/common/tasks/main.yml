@@ -12,26 +12,36 @@
     - nano
     - curl
 
-# Container OS comes with docker.
-#- name: Download and add docker public key.
-#  apt-key: 
-#    url: https://download.docker.com/linux/ubuntu/gpg
-#    id: 0EBFCD88
+# Container OS not present in libcloud T.T.
+- name: Download and add docker public key.
+  apt_key: 
+    url: https://download.docker.com/linux/ubuntu/gpg
+    id: 0EBFCD88
+    state: present
 
-#- name: Get linux release name
-#  shell: echo $(lsb_release -cs)
-#  register: release_version
+- name: Get linux release name
+  shell: echo $(lsb_release -cs)
+  register: release_version
     
-#- name: Add docker repository.
-#  repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{release_version.stdout_lines}} stable"
+- name: Add docker repository.
+  apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{release_version.stdout_lines[0]}} stable"
+    state: present
  
-#- name: Install docker.
-#  apt:
-#     update-cache: yes
-#     name : docker-ce
+- name: Install docker.
+  apt:
+     update-cache: yes
+     name : docker-ce
 
-#- name: Download docker compose.
-#  shell: curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+- name: Check docker compose installed.
+  command: ls /usr/local/bin/docker-compose
+  register: docker_installed
+  ignore_errors: true
 
-#- name: Make docker compose executable.
-#  command: chmod +x /usr/local/bin/docker-compose
+- name: Download docker compose.
+  shell: curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+  when: docker_installed.stdout != '/usr/local/bin/docker-compose'
+
+- name: Make docker compose executable.
+  command: chmod +x /usr/local/bin/docker-compose
+  when: docker_installed.stdout != '/usr/local/bin/docker-compose'
