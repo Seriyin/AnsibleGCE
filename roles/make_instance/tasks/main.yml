@@ -9,8 +9,7 @@
     state: present
     num_instances: "{{number_VMs}}"
     metadata: "{{vm_metadata}}"
-    tags:
-      - "{{instance_tag}}"
+    tags: "{{instance_tag}}"
     disk_size: "{{size_disk}}"
     disk_auto_delete: true
     ip_forward: true
