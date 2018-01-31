@@ -24,6 +24,7 @@ services:
     networks:
       - webnet
     volumes:
-      - "/etc/metricbeatscfg:/usr/share/metricbeat"
+      - "/etc/metricbeatscfg/metricbeat.yml:/usr/share/metricbeat/metricbeat.yml"
+      - "/etc/metricbeatscfg/modules.d/:/usr/share/metricbeat/modules.d/"
 networks:
   webnet:
