@@ -29,4 +29,3 @@
     - vars/vault.yml
   roles:
     - deactivate_instance
-    - deactivate_lb_service
