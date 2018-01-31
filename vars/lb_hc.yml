@@ -1,4 +1,6 @@
+instance_tag: magentolb
+
 http_healthcheck: checkmagento
 magento_poll: checkmagento
 
-httphealthcheck_path: "/up" 
+httphealthcheck_path: "/" 
