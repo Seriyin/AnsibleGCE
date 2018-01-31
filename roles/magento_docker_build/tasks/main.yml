@@ -1,0 +1,7 @@
+- name: Check images present in VM.
+  command: docker image ls magento -q
+  register: docker_image_res
+
+- name: Build magento image if not present.
+  command: docker build -t magento:latest .
+  when: docker_image_res.stdout == "" 
