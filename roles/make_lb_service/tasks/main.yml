@@ -1,20 +1,30 @@
-- name: Create HTTP HealthCheck
-  gcp_healthcheck:
-    healthcheck_name: "{{ http_healthcheck }}"
-    healthcheck_type: HTTP
-    host_header: "{{magento_poll}}"
-    request_path: /hc
-    check_interval: 5
-    timeout: 5
-    unhealthy_threshold: 2
-    healthy_threshold: 1
-    state: present
+# API failure. Who knows why?
+#- name: Create HTTP HealthCheck
+#  gcp_healthcheck:
+#    service_account_email: "{{service_account_email}}"
+#    credentials_file: "{{credentials_file}}"
+#    project_id: "{{project_id}}"
+#    healthcheck_name: "{{ http_healthcheck }}"
+#    healthcheck_type: HTTP
+#    host_header: "{{magento_poll}}"
+#    request_path: /hc
+#    check_interval: 5
+#    timeout: 5
+#    unhealthy_threshold: 2
+#    healthy_threshold: 1
+#    state: present
 
 - name: Start up a Load-balancer
+  vars:
+    members: "{{'europe-west1-c/' + item}}"
   gce_lb:
+    service_account_email: "{{service_account_email}}"
+    credentials_file: "{{credentials_file}}"
+    project_id: "{{project_id}}"
     name: "{{instance_tag}}"
     region: europe-west1
-    members: "{{item}}"
+    port_range: 80-443
+    members: "{{members}}"
     httphealthcheck_name: "{{ http_healthcheck}}"
     httphealthcheck_port: 80
     httphealthcheck_path: "{{httphealthcheck_path}}"
