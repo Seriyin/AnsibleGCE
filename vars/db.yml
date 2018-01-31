@@ -1,10 +1,10 @@
-instance_tag: {{db_name}}
+instance_tag: "{{db_name}}"
 vm_metadata: '{"db":"mysql", "group":"db"}'
 size_disk: 10
 type_machine: g1-small
 number_VMs: 1
-instance_name: {{db_name}}
-instance_image_family: cos-stable
+instance_name: "{{db_name}}"
+instance_image_family: ubuntu-1604-lts
 
 # You shouldn't need to change this.
 mysql_port: 3306

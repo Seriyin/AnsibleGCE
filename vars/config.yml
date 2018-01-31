@@ -1,6 +1,7 @@
 #Tags to apply to GCE instances
 db_name: db
-magento_name: magento1
+magento_name: magento
+elastic_name: elastic
 
 # Magento DB setup. Will match install and db instance default database.
 magento_db_name: magento1
