@@ -32,7 +32,7 @@ services:
       - webnet
     volumes:
       - "php:/var/www/html/magento2"
-      - "./docker-images/nginx/vhosts.conf:/etc/nginx/conf.d/default.conf"
+      - "./vhosts.conf:/etc/nginx/conf.d/default.conf"
   metricbeat:
     image: docker.elastic.co/beats/metricbeat:6.1.2
     deploy:
