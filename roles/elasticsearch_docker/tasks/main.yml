@@ -3,7 +3,7 @@
 
 - name: Create Kibana configuration file
   vars:
-    - elastic_ip: "{{ hostvars[inventory_hostname]['ansible_default_ipv4']['address'] }}"
+    - elastic_ip: "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
   template: 
     src: kibana.yml.j2 
     dest: /etc/custom_kibana.yml
@@ -11,7 +11,7 @@
 - name: Setup docker-compose file.
   template:
     src: elastic_search.yml.j2
-    dest: docker-compose.yml
+    dest: ./docker-compose.yml
 
 - name: Start docker stack.
   command: docker-compose up -d

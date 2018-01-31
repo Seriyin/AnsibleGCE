@@ -17,7 +17,9 @@ services:
                 condition: on-failure
         ports:
             - "5601:5601"
+        networks:
+            - elastic_net
         volumes:
             - "/etc/custom_kibana.yml:/usr/share/kibana/config/kibana.yml"
 networks:
-    elastic_net
+    elastic_net:
