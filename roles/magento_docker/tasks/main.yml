@@ -1,6 +1,6 @@
 - name: Copy docker stack compose
-  template:
-    src: magentostack.yml.j2
+  copy:
+    src: magentostack.yml
     dest: ./docker-compose.yml
 
 - name: Deploy docker stack
