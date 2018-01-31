@@ -1,0 +1,32 @@
+- name: Make modules directory.
+  file:
+    path: /etc/metricbeatscfg/modules.d
+    state: directory
+    mode: 0755
+
+- name: Create ElasticSearch configuration file.
+  vars:
+    - elastic_ip: "{{ hostvars['tag_' + elastic_name]['ansible_default_ipv4']['address'] }}"
+  template: 
+    src: metricbeat.yml.j2
+    dest: /etc/metricbeatscfg/metricbeat.yml
+
+- name: Create nginx configuration.
+  vars:
+  template:
+    src: nginx.yml.j2
+    dest: /etc/metricbeatscfg/modules.d/nginx.yml
+  when: nginx_present is defined
+
+- name: Create docker configuration.
+  vars:
+  template: 
+    src: docker.yml.j2
+    dest: /etc/metricbeatscfg/modules.d/docker.yml
+  when: docker_present is defined
+
+- name: Create system module
+  template: 
+    src: system.yml.j2
+    dest: /etc/metricbeatscfg/modules.d/system.yml
+  when: system_present is defined
