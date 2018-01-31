@@ -1,0 +1,7 @@
+instance_tag: {{elastic_name}}
+vm_metadata: '{"monitor":"elasticsearch", "group":"elastic, kibana"}'
+size_disk: 20
+type_machine: n1-standard-1
+number_VMs: 1
+instance_name: {{elastic_name}}
+instance_image_family: cos-stable
