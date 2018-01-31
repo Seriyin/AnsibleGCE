@@ -10,11 +10,20 @@ services:
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: {{db_password}}
-      MYSQL_DATABASE: {{db_name}}
-      MYSQL_USER: {{db_user}}
-      MYSQL_PASSWORD: {{db_password}}
+      MYSQL_ROOT_PASSWORD: {{magento_db_password}}
+      MYSQL_DATABASE: {{magento_db_name}}
+      MYSQL_USER: {{magento_db_user}}
+      MYSQL_PASSWORD: {{magento_db_password}}
     volumes:
       - "./db:/var/lib/mysql"
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:6.1.2
+    deploy:
+      restart_policy:
+        condition: on-failure
+      networks:
+        - webnet
+    volumes:
+      - "/etc/metricbeatscfg:/usr/share/metricbeat"
 networks:
-  webnet:
+  webnet
