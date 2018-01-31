@@ -1,5 +1,5 @@
 metricbeat.modules:
 - module: docker
   metricsets: ["container", "cpu", "diskio", "healthcheck", "info", "memory", "network"]
-  hosts: ["unix:///var/run/docker.sock"]
+  hosts: ["tcp://{{host_ip}}:2735"]
   period: 10s

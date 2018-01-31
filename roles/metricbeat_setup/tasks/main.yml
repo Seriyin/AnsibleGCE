@@ -6,7 +6,7 @@
 
 - name: Create ElasticSearch configuration file.
   vars:
-    - elastic_ip: "{{ hostvars['tag_' + elastic_name]['ansible_default_ipv4']['address'] }}"
+    - elastic_ip: "{{ hostvars[groups['tag_' + elastic_name][0]]['ansible_default_ipv4']['address'] }}"
   template: 
     src: metricbeat.yml.j2
     dest: /etc/metricbeatscfg/metricbeat.yml
@@ -26,7 +26,7 @@
   when: docker_present is defined
 
 - name: Create system module
-  template: 
-    src: system.yml.j2
+  copy: 
+    src: system.yml
     dest: /etc/metricbeatscfg/modules.d/system.yml
   when: system_present is defined
