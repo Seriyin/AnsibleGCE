@@ -1,3 +1,28 @@
+- name: Make elastic search instance active.
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/elastic_search.yml
+    - vars/gce.yml
+    - vars/vault.yml
+  roles:
+    - make_instance
+    - make_instance_active
+    - wait_ssh
+
+
+- name: Install and run elastic search + kibana in separate heavy duty instance.
+  hosts: "tag_{{elastic_name}}"
+  vars_files:
+    - vars/config.yml
+    - vars/elastic_search.yml
+    - vars/vault.yml
+  become: true
+  become_method: sudo
+  roles:
+    - common
+    - elasticsearch_docker
+
 - name: Make the DB instance active.
   hosts: localhost
   vars_files:
@@ -16,12 +41,15 @@
     - vars/config.yml
     - vars/db.yml
     - vars/vault.yml
+  vars:
+    - host_ip : '{{ hostvars['inventory_name']['ansible_default_ipv4']['address'] }}'
+    - system_present: true
   become: true
   become_method: sudo
   roles:
     - common
+    - metricbeat_setup
     - db_docker
-
 
 - name: Create and activate some magento VMs to be swarm managers based on number in magento.yml
   hosts: localhost
@@ -62,8 +90,13 @@
   vars_files:
     - vars/config.yml
     - vars/vault.yml
+  vars:
+    - host_ip : '{{ hostvars['inventory_name']['ansible_default_ipv4']['address'] }}'
+    - system_present: true
+    - nginx_present: true
   roles:
     - common
+    - metricbeat_setup
     - magento_docker_setup
 
 
