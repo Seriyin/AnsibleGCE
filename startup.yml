@@ -42,7 +42,7 @@
     - vars/db.yml
     - vars/vault.yml
   vars:
-    - host_ip : '{{ hostvars['inventory_name']['ansible_default_ipv4']['address'] }}'
+    - host_ip : "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
     - system_present: true
   become: true
   become_method: sudo
@@ -60,7 +60,7 @@
     - vars/gce.yml
     - vars/vault.yml
   vars: 
-    number_VMs: {{replicate_VMs // 2}}
+    number_VMs: "{{replicate_VMs // 2}}"
   roles:
     - make_instance
     - make_instance_active
@@ -75,7 +75,7 @@
     - vars/gce.yml
     - vars/vault.yml
   vars: 
-    number_VMs: {{replicate_VMs // 2 + replicate_VMs % 2}}
+    number_VMs: "{{replicate_VMs // 2 + replicate_VMs % 2}}"
   roles:
     - make_instance
     - make_instance_active
@@ -91,7 +91,7 @@
     - vars/config.yml
     - vars/vault.yml
   vars:
-    - host_ip : '{{ hostvars['inventory_name']['ansible_default_ipv4']['address'] }}'
+    - host_ip : "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
     - system_present: true
     - nginx_present: true
   roles:
