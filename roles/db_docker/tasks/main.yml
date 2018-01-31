@@ -2,7 +2,7 @@
 - name: Setup docker-compose file.
   template:
     src: db.yml.j2
-    dest: docker-compose.yml
+    dest: ./docker-compose.yml
 
 - name: Start docker stack.
   command: docker-compose up -d
