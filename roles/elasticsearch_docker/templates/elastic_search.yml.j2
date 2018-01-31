@@ -1,0 +1,23 @@
+version: "3"
+services:
+    elastic:
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.1.2
+        deploy:
+            restart_policy:
+                condition: on-failure
+        networks:
+            - elastic_net
+        ports:
+            - "9200:9200"
+            - "9300:9300"
+    kibana:
+        image: docker.elastic.co/kibana/kibana-oss:6.1.2
+        deploy:
+            restart_policy:
+                condition: on-failure
+        ports:
+            - "5601:5601"
+        volumes:
+            - "/etc/custom_kibana.yml:/usr/share/kibana/config/kibana.yml"
+networks:
+    elastic_net
