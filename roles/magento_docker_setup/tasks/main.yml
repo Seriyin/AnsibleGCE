@@ -2,7 +2,12 @@
 - name: Copy magento install template with known db host.
   template:
     src: Dockerfile.j2
-    dest: Dockerfile
+    dest: ./Dockerfile
+
+- name: Copy Nginx vhosts.conf.
+  copy:
+    src: vhosts.conf
+    dest: ./vhosts.conf
 
 - name: Check images present in VM.
   command: docker image ls magento -q
