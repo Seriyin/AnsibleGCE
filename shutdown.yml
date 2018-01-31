@@ -1,28 +1,32 @@
 - name: Deactivate elastic instance
   hosts: localhost
-  var_files:
+  vars_files:
+    - vars/gce.yml
+    - vars/config.yml
     - vars/elastic_search.yml
     - vars/vault.yml
+  roles:
+    - deactivate_instance
+
+
+- name: Deactivate the DB instance
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
     - vars/gce.yml
+    - vars/db.yml
+    - vars/vault.yml
   roles:
     - deactivate_instance
 
 - name: Deactivate all Magento instances + load balancing
   hosts: localhost
   vars_files:
+    - vars/config.yml
     - vars/magento.yml
-    - vars/vault.yml
     - vars/gce.yml
     - vars/lb_hc.yml
+    - vars/vault.yml
   roles:
     - deactivate_instance
     - deactivate_lb_service
-
-- name: Deactivate the DB instance
-  hosts: localhost
-  vars_files:
-    - vars/vault.yml
-    - vars/gce.yml
-    - vars/db.yml
-  roles:
-    - deactivate_instance
