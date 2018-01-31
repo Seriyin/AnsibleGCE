@@ -1,4 +1,4 @@
 instance_tag: 
-  - "{{instance_name}}"
+  - "{{magento_name}}"
   - "manager"
-instance_name: "{{magento_name}} + '-m'"
+instance_name: "{{magento_name + '-m'}}"
