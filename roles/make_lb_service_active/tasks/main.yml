@@ -1,8 +1,14 @@
 - name: Activate the Load-balancer if down.
+  vars:
+    members: "{{'europe-west1-c/' + item}}"
   gce_lb:
+    service_account_email: "{{service_account_email}}"
+    credentials_file: "{{credentials_file}}"
+    project_id: "{{project_id}}"
     name: "{{instance_tag}}"
     region: europe-west1
-    members: "{{item}}"
+    port_range: 80-443
+    members: "{{members}}"
     httphealthcheck_name: "{{ http_healthcheck}}"
     httphealthcheck_port: 80
     httphealthcheck_path: "{{httphealthcheck_path}}"

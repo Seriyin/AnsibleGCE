@@ -7,5 +7,8 @@
     image_family: "{{instance_image_family}}"
     state: stopped
     disk_auto_delete: true
+    service_account_email: "{{service_account_email}}"
+    credentials_file: "{{credentials_file}}"
+    project_id: "{{project_id}}"
   with_inventory_hostnames:
     - tag_{{instance_name}}
