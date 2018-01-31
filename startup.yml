@@ -79,6 +79,7 @@
   roles:
     - make_instance
     - make_instance_active
+    - wait_ssh
 
 
 
@@ -99,6 +100,18 @@
     - metricbeat_setup
     - magento_docker_setup
 
+- name: Build docker magento image.
+  hosts: "tag_{{magento_name}}"
+  connection: ssh
+  serial: 1
+  become: true
+  become_method: sudo
+  vars_files:
+    - vars/config.yml
+    - vars/vault.yml
+  roles:
+    - magento_docker_build
+
 
 # Thanks to https://thisendout.com/2016/09/13/deploying-docker-swarm-with-ansible/
 # determine the status of each manager node and break them
@@ -110,23 +123,22 @@
   become: true
   become_method: sudo
   tasks:
-    - name: load docker info as facts
-      docker_info_facts:
-
+    - name: determine swarm status
+      shell: "docker info | egrep '^Swarm: ' | cut -d ' ' -f2"
+      register: swarm_status
     - name: create swarm_manager_operational group
       add_host:
-        hostname: "{{ item }}"
+        name: "{{ item }}"
         groups: swarm_manager_operational
-      with_items: "{{ ansible_play_hosts | default(play_hosts) }}"
-      when: "'{{ hostvars[item]['docker_info']['Swarm']['LocalNodeState'] }}' == 'active'"
+      with_items: "{{ play_hosts }}"
+      when: "'active' in swarm_status.stdout_lines"
       run_once: true
-
     - name: create swarm_manager_bootstrap group
       add_host:
-        hostname: "{{ item }}"
+        name: "{{ item }}"
         groups: swarm_manager_bootstrap
-      with_items: "{{ ansible_play_hosts | default(play_hosts) }}"
-      when: "'{{ hostvars[item]['docker_info']['Swarm']['LocalNodeState'] }}' != 'active'"
+      with_items: "{{ play_hosts }}"
+      when: "'active' not in swarm_status.stdout_lines"
       run_once: true
 
 # determine the status of each worker node and break them
@@ -138,25 +150,23 @@
   become: true
   become_method: sudo
   tasks:
-    - name: load docker info as facts
-      docker_info_facts:
-
+    - name: determine swarm status
+      shell: "docker info | egrep '^Swarm: ' | cut -d ' ' -f2"
+      register: swarm_status
     - name: create swarm_worker_operational group
       add_host:
-        hostname: "{{ item }}"
+        name: "{{ item }}"
         groups: swarm_worker_operational
-      with_items: "{{ ansible_play_hosts | default(play_hosts) }}"
-      when: "'{{ hostvars[item]['docker_info']['Swarm']['LocalNodeState'] }}' == 'active'"
+      with_items: "{{ play_hosts }}"
+      when: "'active' in swarm_status.stdout_lines"
       run_once: true
-
     - name: create swarm_worker_bootstrap group
       add_host:
-        hostname: "{{ item }}"
+        name: "{{ item }}"
         groups: swarm_worker_bootstrap
-      with_items: "{{ ansible_play_hosts | default(play_hosts) }}"
-      when: "'{{ hostvars[item]['docker_info']['Swarm']['LocalNodeState'] }}' != 'active'"
+      with_items: "{{ play_hosts }}"
+      when: "'active' not in swarm_status.stdout_lines"
       run_once: true
-
 
 # when the swarm_manager_operational group is empty, meaning there
 # are no hosts running swarm, we need to initialize one of the hosts
@@ -164,15 +174,16 @@
 - hosts: swarm_manager_bootstrap[0]
   become: true
   become_method: sudo
+  vars:
+    - host_ip : "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
   tasks:
     - name: initialize swarm cluster
-      shell: docker swarm init --advertise-addr={{ swarm_iface | default('eth0') }}:2377
+      shell: "docker swarm init --advertise-addr={{ host_ip }}:2377"
       when: "'swarm_manager_operational' not in groups"
       register: bootstrap_first_node
-
     - name: add initialized host to swarm_manager_operational group
       add_host:
-        hostname: "{{ item }}"
+        name: "{{ item }}"
         groups: swarm_manager_operational
       with_items: "{{ ansible_play_hosts | default(play_hosts) }}"
       when: bootstrap_first_node | changed
@@ -182,20 +193,16 @@
 - hosts: swarm_manager_operational[0]
   become: true
   become_method: sudo
-  vars:
-    iface: "{{ swarm_iface | default('eth0') }}"
   tasks:
     - name: retrieve swarm manager token
       shell: docker swarm join-token -q manager
       register: swarm_manager_token
-
     - name: retrieve swarm worker token
       shell: docker swarm join-token -q worker
       register: swarm_worker_token
-
     - name: populate list of manager ips
       add_host:
-        hostname: "{{ hostvars[item]['ansible_' + iface]['ipv4']['address'] }}"
+        name: "{{ hostvars[item]['ansible_default_ipv4']['address'] }}"
         groups: swarm_manager_ips
       with_items: "{{ ansible_play_hosts | default(play_hosts) }}"
 
@@ -205,10 +212,11 @@
   become: true
   become_method: sudo
   vars:
-    token: "{{ hostvars[groups['swarm_manager_operational'][0]]['swarm_manager_token']['stdout'] }}"
+    - token: "{{ hostvars[groups['swarm_manager_operational'][0]]['swarm_manager_token']['stdout'] }}"
+    - host_ip : "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
   tasks:
     - name: join manager nodes to cluster
-      shell: docker swarm join --advertise-addr={{ swarm_iface | default('eth0') }}:2377 --token={{ token }} {{ groups['swarm_manager_ips'][0] }}:2377
+      shell: "docker swarm join --advertise-addr={{ host_ip }}:2377 --token={{ token }} {{ groups['swarm_manager_ips'][0] }}:2377"
 
 
 # join the remaining workers to the swarm cluster
@@ -216,10 +224,11 @@
   become: true
   become_method: sudo
   vars:
-    token: "{{ hostvars[groups['swarm_manager_operational'][0]]['swarm_worker_token']['stdout'] }}"
+    - token: "{{ hostvars[groups['swarm_manager_operational'][0]]['swarm_worker_token']['stdout'] }}"
+    - host_ip : "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
   tasks:
     - name: join worker nodes to cluster
-      shell: docker swarm join --advertise-addr={{ swarm_iface | default('eth0') }}:2377 --token={{ token }} {{ groups['swarm_manager_ips'][0] }}:2377
+      shell: "docker swarm join --advertise-addr={{ host_ip }}:2377 --token={{ token }} {{ groups['swarm_manager_ips'][0] }}:2377"
 
 - name: Docker stack deploy on swarm
   hosts: swarm_manager_operational[0]
@@ -234,6 +243,7 @@
 - name: Generate and activate a load balancing service
   hosts: localhost
   vars_files:
+    - vars/config.yml
     - vars/magento.yml
     - vars/vault.yml
     - vars/gce.yml

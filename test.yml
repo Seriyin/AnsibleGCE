@@ -1,10 +1,13 @@
 ---
-- name: Make a Standard VM active for templating
+- name: Generate and activate a load balancing service
   hosts: localhost
   vars_files:
+    - vars/config.yml
     - vars/magento.yml
-    - vars/gce.yml
     - vars/vault.yml
+    - vars/gce.yml
+    - vars/lb_hc.yml
   roles:
-    - make_instance 
+    - make_lb_service
+    - make_lb_service_active
 
