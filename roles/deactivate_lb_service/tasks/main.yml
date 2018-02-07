@@ -6,6 +6,9 @@
     httphealthcheck_name: "{{ http_healthcheck}}"
     httphealthcheck_port: 80
     httphealthcheck_path: "{{httphealthcheck_path}}"
+    service_account_email: "{{service_account_email}}"
+    credentials_file: "{{credentials_file}}"
+    project_id: "{{project_id}}"
     with_items: 
       - "{{ groups['tag_{{magento_name}}'] }}"
     state: absent

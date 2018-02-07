@@ -8,6 +8,76 @@
   roles:
     - make_instance
     - make_instance_active
+
+- name: Make the DB instance active.
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/db.yml
+    - vars/gce.yml
+    - vars/vault.yml
+  roles:
+    - make_instance
+    - make_instance_active
+
+- name: Create and activate some magento VMs to be swarm managers based on number in magento.yml
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/magento.yml
+    - vars/magento_manager.yml
+    - vars/gce.yml
+    - vars/vault.yml
+  vars: 
+    number_VMs: "{{replicate_VMs // 2}}"
+  roles:
+    - make_instance
+    - make_instance_active
+
+- name: Create and activate some magento VMs to be swarm workers based on number in magento.yml
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/magento.yml
+    - vars/magento_worker.yml
+    - vars/gce.yml
+    - vars/vault.yml
+  vars: 
+    number_VMs: "{{replicate_VMs // 2 + replicate_VMs % 2}}"
+  roles:
+    - make_instance
+    - make_instance_active
+
+- name: Wait for Elastic
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/elastic_search.yml
+  roles:
+    - wait_ssh
+
+- name: Wait for DB
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/db.yml
+  roles:
+    - wait_ssh
+
+- name: Wait for Magento managers.
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/magento_manager.yml
+  roles:
+    - wait_ssh
+
+- name: Wait for Magento workers.
+  hosts: localhost
+  vars_files:
+    - vars/config.yml
+    - vars/magento_worker.yml
+  roles:
     - wait_ssh
 
 
@@ -23,17 +93,6 @@
     - common
     - elasticsearch_docker
 
-- name: Make the DB instance active.
-  hosts: localhost
-  vars_files:
-    - vars/config.yml
-    - vars/db.yml
-    - vars/gce.yml
-    - vars/vault.yml
-  roles:
-    - make_instance
-    - make_instance_active
-    - wait_ssh
 
 - name: Install and run DB-server from the DB instance
   hosts: "tag_{{db_name}}"
@@ -51,38 +110,6 @@
     - metricbeat_setup
     - db_docker
 
-- name: Create and activate some magento VMs to be swarm managers based on number in magento.yml
-  hosts: localhost
-  vars_files:
-    - vars/config.yml
-    - vars/magento.yml
-    - vars/magento_manager.yml
-    - vars/gce.yml
-    - vars/vault.yml
-  vars: 
-    number_VMs: "{{replicate_VMs // 2}}"
-  roles:
-    - make_instance
-    - make_instance_active
-
-
-- name: Create and activate some magento VMs to be swarm workers based on number in magento.yml
-  hosts: localhost
-  vars_files:
-    - vars/config.yml
-    - vars/magento.yml
-    - vars/magento_worker.yml
-    - vars/gce.yml
-    - vars/vault.yml
-  vars: 
-    number_VMs: "{{replicate_VMs // 2 + replicate_VMs % 2}}"
-  roles:
-    - make_instance
-    - make_instance_active
-    - wait_ssh
-
-
-
 - name: Setup docker and magento base to all magento VMs.
   hosts: "tag_{{magento_name}}"
   connection: ssh
@@ -92,6 +119,7 @@
     - vars/config.yml
     - vars/vault.yml
   vars:
+    - instance_name : magento
     - host_ip : "{{ hostvars[ansible_hostname]['ansible_default_ipv4']['address'] }}"
     - system_present: true
     - nginx_present: true

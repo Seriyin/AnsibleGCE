@@ -19,13 +19,25 @@
   roles:
     - deactivate_instance
 
-- name: Deactivate all Magento instances + load balancing
+- name: Deactivate all Magento instances
   hosts: localhost
   vars_files:
     - vars/config.yml
     - vars/magento.yml
     - vars/gce.yml
-    - vars/lb_hc.yml
     - vars/vault.yml
+  vars:
+    - instance_name: "{{magento_name}}"
   roles:
     - deactivate_instance
+
+#- name: Deactivate load balancer
+#  hosts: localhost
+#  vars_files:
+#    - vars/config.yml
+#    - vars/magento_manager.yml
+#    - vars/gce.yml
+#    - vars/vault.yml
+#  roles:
+#    - deactivate_lb_service
+

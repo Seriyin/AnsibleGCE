@@ -30,7 +30,7 @@ setup.template.settings:
 
 # The name of the shipper that publishes the network data. It can be used to group
 # all the transactions sent by a single shipper in the web interface.
-#name:
+name: {{instance_name}}
 
 # The tags of the shipper are included in their own field with each
 # transaction published.
@@ -64,20 +64,7 @@ setup.kibana:
   # Scheme and port can be left out and will be set to the default (http and 5601)
   # In case you specify and additional path, the scheme is required: http://localhost:5601/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
-  #host: "localhost:5601"
-
-#============================= Elastic Cloud ==================================
-
-# These settings simplify using metricbeat with the Elastic Cloud (https://cloud.elastic.co/).
-
-# The cloud.id setting overwrites the `output.elasticsearch.hosts` and
-# `setup.kibana.host` options.
-# You can find the `cloud.id` in the Elastic Cloud web UI.
-#cloud.id:
-
-# The cloud.auth setting overwrites the `output.elasticsearch.username` and
-# `output.elasticsearch.password` settings. The format is `<user>:<pass>`.
-#cloud.auth:
+  host: "{{elastic_ip}}:5601"
 
 #================================ Outputs =====================================
 
@@ -85,6 +72,8 @@ setup.kibana:
 
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
+  enabled: true
+
   # Array of hosts to connect to.
   #hosts: ["192.168.1.143:9200"]
   hosts: ["{{ elastic_ip }}:9200"]
@@ -94,28 +83,16 @@ output.elasticsearch:
   #username: "elastic"
   #password: "changeme"
 
-#----------------------------- Logstash output --------------------------------
-#output.logstash:
-  # The Logstash hosts
-  #hosts: ["localhost:5044"]
-
-  # Optional SSL. By default is off.
-  # List of root certificates for HTTPS server verifications
-  #ssl.certificate_authorities: ["/etc/pki/root/ca.pem"]
-
-  # Certificate for SSL client authentication
-  #ssl.certificate: "/etc/pki/client/cert.pem"
-
-  # Client Certificate Key
-  #ssl.key: "/etc/pki/client/cert.key"
 
 #================================ Logging =====================================
 
 # Sets log level. The default log level is info.
 # Available log levels are: error, warning, info, debug
-#logging.level: debug
+logging.level: debug
 
 # At debug level, you can selectively enable logging only for some components.
 # To enable all selectors use ["*"]. Examples of other selectors are "beat",
 # "publish", "service".
-#logging.selectors: ["*"]
+logging.selectors: ["*"]
+
+logging.to_files: true
